@@ -1,6 +1,8 @@
 const authController = {};
 const jwt = require("jsonwebtoken");
 
+const User = require("../models/User");
+
 require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -30,4 +32,23 @@ authController.authenticate = (req, res, next) => {
   }
 };
 
+authController.checkAdminPermission = async (req, res, next) => {
+  try {
+    const { userId } = req;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("can not find user");
+    }
+
+    if (user.level !== "admin") {
+      throw new Error("no permission");
+    }
+
+    next();
+  } catch (err) {
+    res.status(400).json({ status: "fail", error: err.message });
+  }
+};
 module.exports = authController;
