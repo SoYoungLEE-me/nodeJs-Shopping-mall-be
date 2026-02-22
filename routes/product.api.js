@@ -12,4 +12,20 @@ router.post(
 
 router.get("/", productController.getProductList);
 
+router.put(
+  "/:id",
+  authController.authenticate,
+  authController.checkAdminPermission,
+  productController.updateProduct
+);
+
+router.delete(
+  "/:id",
+  authController.authenticate,
+  authController.checkAdminPermission,
+  productController.deleteProduct
+);
+
+router.get("/:id", productController.getProductDetail);
+
 module.exports = router;
