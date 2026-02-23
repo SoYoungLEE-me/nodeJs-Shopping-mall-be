@@ -18,6 +18,7 @@ const productSchema = Schema(
     stock: {
       type: Object,
       required: true,
+      min: 0,
     },
     status: {
       type: String,
