@@ -124,17 +124,6 @@ cartController.updateQty = async (req, res) => {
       throw new Error("아이템을 찾을 수 없습니다.");
     }
 
-    // 재고 체크
-    const availableStock = item.productId.stock[item.size];
-
-    if (qty > availableStock) {
-      return res.status(400).json({
-        status: "fail",
-        error: "재고가 부족합니다.",
-        availableStock,
-      });
-    }
-
     item.qty = qty;
 
     await cart.save();
