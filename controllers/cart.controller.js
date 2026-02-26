@@ -53,15 +53,23 @@ cartController.getCartList = async (req, res) => {
     const cart = await Cart.findOne({ userId }).populate("items.productId");
 
     if (!cart) {
-      return res.status(200).json({
-        status: "success",
-        data: [],
-      });
+      return res.status(200).json({ status: "success", data: [] });
     }
+
+    const updatedItems = cart.items.map((item) => {
+      const currentStock = item.productId.stock?.[item.size.toLowerCase()] || 0;
+
+      return {
+        ...item._doc,
+        productId: item.productId,
+        insufficientStock: item.qty > currentStock,
+        availableStock: currentStock,
+      };
+    });
 
     res.status(200).json({
       status: "success",
-      data: cart.items,
+      data: updatedItems,
     });
   } catch (err) {
     res.status(400).json({
@@ -120,7 +128,11 @@ cartController.updateQty = async (req, res) => {
     const availableStock = item.productId.stock[item.size];
 
     if (qty > availableStock) {
-      throw new Error("재고가 부족합니다.");
+      return res.status(400).json({
+        status: "fail",
+        error: "재고가 부족합니다.",
+        availableStock,
+      });
     }
 
     item.qty = qty;
