@@ -12,6 +12,20 @@ const orderSchema = Schema(
     },
     contact: { type: Object, required: true },
     totalPrice: { type: Number, required: true, default: 0 },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+
+    finalPrice: {
+      type: Number,
+      required: true,
+    },
+
+    couponCode: {
+      type: String,
+      default: "",
+    },
     orderNum: { type: String },
     userId: {
       type: mongoose.ObjectId,

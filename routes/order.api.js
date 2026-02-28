@@ -7,6 +7,13 @@ router.post("/", authController.authenticate, orderController.createOrder);
 
 router.get("/me", authController.authenticate, orderController.getMyOrders);
 
+//주문 취소
+router.put(
+  "/:id/cancel",
+  authController.authenticate,
+  orderController.cancelOrder
+);
+
 //어드민 관리
 router.get(
   "/",
